@@ -42,7 +42,8 @@ export default {
   //   this.getChannel();
   // },
   mounted() {
-    this.pushNav();
+    // this.pushNav();
+    this.getChannel();
   },
   computed: {
     activeNav: function() {
@@ -59,22 +60,23 @@ export default {
     }
   },
   methods: {
-    // getChannel() {
-    //   if (sessionStorage.getItem("channel_list") != null) {
-    //     JSON.parse(sessionStorage.getItem("channel_list")).forEach(element => {
-    //       this.nav.push(element);
-    //     });
-    //   } else {
-    //     api.getChannelList().then(res => {
-    //       sessionStorage.setItem(
-    //         "channel_list",
-    //         JSON.stringify(res.data.data.list)
-    //       );
-    //       res.data.data.list.forEach(element => {
-    //         this.nav.push(element);
-    //       });
-    //     });
-    //   }
+    getChannel() {
+      if (sessionStorage.getItem("channel_list") != null) {
+        JSON.parse(sessionStorage.getItem("channel_list")).forEach(element => {
+          this.nav.push(element);
+        });
+      } else {
+        api.getChannelList().then(res => {
+          sessionStorage.setItem(
+            "channel_list",
+            JSON.stringify(res.data.data.list)
+          );
+          res.data.data.list.forEach(element => {
+            this.nav.push(element);
+          });
+        });
+      }
+    },
     pushNav() {
       if (store.getters.channels.legnth == 0) {
         this.$store.dispatch("setChannels").then(

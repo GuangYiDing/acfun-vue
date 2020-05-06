@@ -90,8 +90,8 @@ export default {
     };
   },
   mounted() {
-    // this.getChannel();
-    this.getRecommend();
+    this.getChannel();
+    // this.getRecommend();
   },
   computed: {},
   methods: {
@@ -106,47 +106,40 @@ export default {
           item.article_list = res.data.data.list;
         });
     },
-    // getRecommend() {
-    //   // let getArticleRecommend = "getArticleRecommend";
-    //   // let RecommendLatest = "getArticleRecommendLatest";
-    //   // let list = JSON.parse(sessionStorage.getItem("channelList"));
-    //   // console.log(list);
-    //   let list = this.recommend.channel_list;
-    //   list.map(item => {
-    //     api
-    //       .getArticleRecommend$(item.id, {
-    //         params: { pageNum: 1, pageSize: 5 }
-    //       })
-    //       .then(res => {
-    //         item.currentPage = res.data.data.pageNum;
-    //         item.totalPage = res.data.data.totalPage;
-    //         item.article_list = res.data.data.list;
-    //       });
-    //   });
-    //   this.recommend.channel_list = list;
-    // },
-    getRecommend() {
-      let channel_list = store.getters.channels;
-      // debugger;
-      channel_list.map(item => {
-        item.currentPage = 0;
-        item.totalPage = 0;
-        item.article_list = [];
-        item.article_list.map(item => {
-          // debugger;
-          api
-            .getArticleRecommend$(item.id, {
-              params: { pageNum: 1, pageSize: 5 }
-            })
-            .then(res => {
-              item.currentPage = res.data.data.pageNum;
-              item.totalPage = res.data.data.totalPage;
-              item.article_list = res.data.data.list;
-            });
+    getRecommend(item) {
+      api
+        .getArticleRecommend$(item.id, {
+          params: { pageNum: 1, pageSize: 5 }
+        })
+        .then(res => {
+          item.currentPage = res.data.data.pageNum;
+          item.totalPage = res.data.data.totalPage;
+          item.article_list = res.data.data.list;
         });
-      });
-      this.recommend.channel_list = channel_list;
+      // this.recommend.channel_list = list;
     },
+    // getRecommend() {
+    //   let channel_list = store.getters.channels;
+    //   // debugger;
+    //   channel_list.map(item => {
+    //     item.currentPage = 0;
+    //     item.totalPage = 0;
+    //     item.article_list = [];
+    //     item.article_list.map(item => {
+    //       // debugger;
+    //       api
+    //         .getArticleRecommend$(item.id, {
+    //           params: { pageNum: 1, pageSize: 5 }
+    //         })
+    //         .then(res => {
+    //           item.currentPage = res.data.data.pageNum;
+    //           item.totalPage = res.data.data.totalPage;
+    //           item.article_list = res.data.data.list;
+    //         });
+    //     });
+    //   });
+    //   this.recommend.channel_list = channel_list;
+    // },
     changeRecommend(item) {
       if (item.currentPage == item.totalPage) {
         Notification({
@@ -165,22 +158,22 @@ export default {
           item.article_list = res.data.data.list;
         });
     },
-    // getChannel() {
-    //   if (sessionStorage.getItem("channelList") != null) {
-    //     return;
-    //   } else {
-    //     api.getChannelList().then(res => {
-    //       var list = res.data.data.list;
-    //       list.map(item => {
-    //         item.currentPage = 0;
-    //         item.totalPage = 0;
-    //         item.article_list = [];
-    //         // this.getRecommend(item);
-    //       });
-    //       this.recommend.channel_list = list;
-    //     });
-    //   }
-    // },
+    getChannel() {
+      if (sessionStorage.getItem("channelList") != null) {
+        return;
+      } else {
+        api.getChannelList().then(res => {
+          var list = res.data.data.list;
+          list.map(item => {
+            item.currentPage = 0;
+            item.totalPage = 0;
+            item.article_list = [];
+            this.getRecommend(item);
+          });
+          this.recommend.channel_list = list;
+        });
+      }
+    },
     goTo(aid, uid) {
       this.$router.push({
         path: "/ac",
